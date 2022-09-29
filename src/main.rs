@@ -27,8 +27,8 @@ pub fn brute_force(text: &str, pattern: &str) -> Option<usize> {
 }
 
 fn main() {
-    let text = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaajsgfddduwdaabyfgrwt";
-    let pattern = "aab";
+    let text = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab";
+    let pattern = "aaaaaaaaaab";
 
     println!("Result: {:?}", brute_force(text, pattern));
 }
