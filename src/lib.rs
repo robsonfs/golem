@@ -1,3 +1,6 @@
+#![warn(clippy::pedantic)]
+#![allow(clippy::must_use_candidate)]
+
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
@@ -13,13 +16,13 @@ pub fn weak_hash<T: AsRef<str>>(pattern: T) -> u64 {
         .as_ref()
         .as_bytes()
         .iter()
-        .map(|x| *x as u64)
+        .map(|x| u64::from(*x))
         .sum::<u64>()
 }
 
 pub fn brute_force(text: &str, pattern: &str) -> Option<usize> {
     if pattern.len() > text.len() {
-        return None
+        return None;
     }
 
     let mut p: usize = 0;
@@ -29,23 +32,23 @@ pub fn brute_force(text: &str, pattern: &str) -> Option<usize> {
         for i in 0..pattern.len() {
             if pattern.as_bytes()[i] != text.as_bytes()[p + i] {
                 continue;
-            } else {
-                if i == pattern.len() - 1 {
-                    found = true;
-                }
+            }
+
+            if i == pattern.len() - 1 {
+                found = true;
             }
         }
         if found {
-            return Some(p)
+            return Some(p);
         }
         p += 1;
     }
-    return None
+    None
 }
 
 pub fn hash_approach(text: &str, pattern: &str) -> Option<usize> {
     if pattern.len() > text.len() {
-        return None
+        return None;
     }
 
     let pattern_hash = calculate_hash(&pattern.as_bytes());
@@ -54,7 +57,7 @@ pub fn hash_approach(text: &str, pattern: &str) -> Option<usize> {
         let end = pattern.len() + p;
         let partial_text_hash = calculate_hash(&text[p..end].as_bytes());
         if partial_text_hash == pattern_hash {
-            return Some(p)
+            return Some(p);
         }
     }
 
@@ -62,25 +65,24 @@ pub fn hash_approach(text: &str, pattern: &str) -> Option<usize> {
 }
 
 pub fn rolling_sum(prev_hash: u64, prev_window: &str, actual_window: &str) -> u64 {
-    prev_hash
-        - *prev_window.as_bytes().first().unwrap_or(&0) as u64
-        + *actual_window.as_bytes().last().unwrap_or(&0) as u64
+    prev_hash - u64::from(*prev_window.as_bytes().first().unwrap_or(&0))
+        + u64::from(*actual_window.as_bytes().last().unwrap_or(&0))
 }
 
 pub fn rolling_hash(text: &str, pattern: &str) -> Option<usize> {
     if pattern.len() > text.len() {
-        return None
+        return None;
     }
 
     let patern_hash = weak_hash(pattern);
     let mut window_hash = weak_hash(&text[0..pattern.len()]);
 
     if patern_hash == window_hash {
-        return Some(0)
+        return Some(0);
     }
 
     for i in 1..=(text.len() - pattern.len()) {
-        let prev_window = &text[(i-1)..(pattern.len() + i)];
+        let prev_window = &text[(i - 1)..(pattern.len() + i)];
         let actual_window = &text[i..(pattern.len() + i)];
         window_hash = rolling_sum(window_hash, prev_window, actual_window);
 
@@ -88,7 +90,6 @@ pub fn rolling_hash(text: &str, pattern: &str) -> Option<usize> {
             return Some(i);
         }
     }
-
 
     None
 }
