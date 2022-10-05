@@ -67,6 +67,15 @@ impl RollingHash {
     }
 }
 
+pub fn compute_hash(data: &[u8]) -> u64 {
+    let mut rh = RollingHash::default();
+    for k in data {
+        rh.append(*k);
+    }
+
+    rh.hash
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -110,7 +119,30 @@ mod tests {
         rh.append(new);
         assert_eq!(BASE, rh.magic)
     }
-    
+
+    #[test]
+    fn test_compute_hash_empty() {
+        let empty_hash = compute_hash(b"");
+        assert_eq!(0, empty_hash);
+    }
+
+    #[test]
+    fn test_compute_hash_bcd() {
+        let bcd_hash = compute_hash(b"BCD");
+        assert_eq!(4342596, bcd_hash);
+    }
+
+    #[test]
+    fn test_rolling_hash_slide() {
+        let mut rh = RollingHash::default();
+
+        for c in "ABC".as_bytes() {
+            rh.append(*c);
+        }
+        rh.slide('A' as u8, 'D' as u8);
+
+        assert_eq!(4342596, rh.hash);
+    }
 
     #[test]
     fn test_base_inverse() {
