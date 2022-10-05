@@ -38,7 +38,7 @@ impl RollingHash {
                         return k;
                     }
                 }
-                1
+                1 // As long as `base` and `prime` are coprime, this will never be returned.
             }
         }
     }
@@ -88,7 +88,32 @@ mod tests {
     }
 
     #[test]
-    fn test_base_inverse_default() {
+    fn test_rolling_hash_ibase() {
+        let rh = RollingHash::default();
+        assert!(rh.ibase.is_none(), "ibase should start as a None variant.")
+    }
+
+    #[test]
+    fn test_rolling_hash_append_empty_hash() {
+        let new = 'A' as u8;
+        let mut rh = RollingHash::default();
+
+        rh.append(new);
+        assert_eq!(65, rh.hash)
+    }
+
+    #[test]
+    fn test_rolling_hash_append_empty_magic() {
+        let new = 'A' as u8;
+        let mut rh = RollingHash::default();
+
+        rh.append(new);
+        assert_eq!(BASE, rh.magic)
+    }
+    
+
+    #[test]
+    fn test_base_inverse() {
         let mut rh = RollingHash::new(2, 31);
         assert_eq!(16, rh.base_inverse())
     }
