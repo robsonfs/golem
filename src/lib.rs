@@ -2,7 +2,7 @@
 #![allow(clippy::must_use_candidate)]
 
 pub mod consts;
+mod hashing;
 pub mod pre_processing;
-mod rolling_hash;
 
-pub use rolling_hash::{compute_hash, RollingHash};
+pub use hashing::rolling_hash::{compute_hash, RollingHash};
