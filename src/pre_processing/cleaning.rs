@@ -8,12 +8,11 @@ pub struct CleanedData {
 
 impl CleanedData {
     pub fn new<T: AsRef<str> + ?Sized>(raw_data: &T, language_code: &str) -> Self {
-        if LANG_CODES.binary_search(&language_code).is_err() {
-            panic!(
-                "{} is an invalid language code. make sure you are using a 2-letters ISO 639-1 language code",
-                &language_code
-            );
-        }
+        assert!(
+            LANG_CODES.binary_search(&language_code).is_ok(),
+            "{} is an invalid language code. make sure you are using a 2-letters ISO 639-1 language code",
+            &language_code
+        );
         Self {
             raw_data: raw_data.as_ref().to_lowercase(),
             language_code: language_code.to_owned(),
@@ -25,7 +24,7 @@ impl CleanedData {
         self.tokenized_data = self
             .raw_data
             .split_ascii_whitespace()
-            .map(|w| w.to_owned())
+            .map(std::borrow::ToOwned::to_owned)
             .collect::<Vec<String>>();
     }
 

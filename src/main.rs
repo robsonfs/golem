@@ -1,3 +1,3 @@
 fn main() {
-    println!("Hello Golem, a Rust alternative for rdiff")
+    println!("Hello Golem, a Rust tool for plagiarism detection")
 }

@@ -26,19 +26,18 @@ impl RollingHash {
     /// update `self.ibase` with that value and return it to the caller.
     ///
     /// TODO: Take advantage of the extended Euclidean algorithm to improve
-    /// this implementation: (Maybe with modinverse crate https://crates.io/crates/modinverse)
+    /// this implementation: (Maybe with [modinverse crate](https://crates.io/crates/modinverse) )
     pub fn base_inverse(&mut self) -> u64 {
-        match self.ibase {
-            Some(i) => i,
-            None => {
-                for k in 1..self.prime {
-                    if (k * self.base) % self.prime == 1 {
-                        self.ibase = Some(k);
-                        return k;
-                    }
+        if let Some(i) = self.ibase {
+            i
+        } else {
+            for k in 1..self.prime {
+                if (k * self.base) % self.prime == 1 {
+                    self.ibase = Some(k);
+                    return k;
                 }
-                1 // As long as `base` and `prime` are coprime, this will never be returned.
             }
+            1 // As long as `base` and `prime` are coprime, this will never be returned.
         }
     }
 
@@ -52,12 +51,12 @@ impl RollingHash {
 
     pub fn append(&mut self, new: u8) {
         self.hash = (self.hash * self.base + u64::from(new)) % self.prime;
-        self.magic = (self.magic * self.base) % self.prime
+        self.magic = (self.magic * self.base) % self.prime;
     }
 
     pub fn remove(&mut self, old: u8) {
         self.magic = (self.magic * self.base_inverse()) % self.prime;
-        self.hash = (self.hash - u64::from(old) * self.magic + self.prime * self.base) % self.prime
+        self.hash = (self.hash - u64::from(old) * self.magic + self.prime * self.base) % self.prime;
     }
 
     pub fn slide(&mut self, old: u8, new: u8) {
