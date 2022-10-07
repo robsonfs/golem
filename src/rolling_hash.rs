@@ -24,7 +24,7 @@ impl RollingHash {
     /// Check if there is a value for `self.ibase`. In the case of affirmative,
     /// return it. Otherwise, calculate the multiplicative inverse for `self.base`,
     /// update `self.ibase` with that value and return it to the caller.
-    /// 
+    ///
     /// TODO: Take advantage of the extended Euclidean algorithm to improve
     /// this implementation: (Maybe with modinverse crate https://crates.io/crates/modinverse)
     pub fn base_inverse(&mut self) -> u64 {
