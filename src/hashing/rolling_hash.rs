@@ -27,9 +27,9 @@ impl RollingHash {
     ///
     /// TODO: Take advantage of the extended Euclidean algorithm to improve
     /// this implementation: (something like [modinverse crate](https://crates.io/crates/modinverse)).
-    /// 
+    ///
     /// # Panics
-    /// 
+    ///
     /// It will panic if `self.base` and `self.prime` are not relatively prime.
     pub fn base_inverse(&mut self) -> u64 {
         if let Some(i) = self.ibase {
@@ -59,8 +59,7 @@ impl RollingHash {
     }
 
     pub fn remove(&mut self, old: u8) {
-        self.hash =
-            (self.hash + self.prime * self.base - u64::from(old) * self.magic) % self.prime;
+        self.hash = (self.hash + self.prime * self.base - u64::from(old) * self.magic) % self.prime;
         self.magic = (self.magic * self.base_inverse()) % self.prime;
     }
 
@@ -145,12 +144,12 @@ mod tests {
     #[test]
     fn test_rolling_hash_slide() {
         let mut rh = RollingHash::new(42, 10007);
-    
+
         for c in "ABC".as_bytes() {
             rh.append(*c);
         }
         rh.slide('A' as u8, 'D' as u8);
-    
+
         assert_eq!(2819, rh.hash);
     }
 
