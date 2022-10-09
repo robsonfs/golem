@@ -55,13 +55,14 @@ impl RollingHash {
     }
 
     pub fn remove(&mut self, old: u8) {
+        self.hash =
+            (self.hash + self.prime * self.base - u64::from(old) * self.magic) % self.prime;
         self.magic = (self.magic * self.base_inverse()) % self.prime;
-        self.hash = (self.hash - u64::from(old) * self.magic + self.prime * self.base) % self.prime;
     }
 
     pub fn slide(&mut self, old: u8, new: u8) {
-        self.hash =
-            (self.hash * self.base - u64::from(old) * self.magic + u64::from(new)) % self.prime;
+        self.remove(old);
+        self.append(new);
     }
 }
 
@@ -139,7 +140,7 @@ mod tests {
         }
         rh.slide('A' as u8, 'D' as u8);
 
-        assert_eq!(4342596, rh.hash);
+        assert_eq!(921989349, rh.hash);
     }
 
     #[test]
