@@ -144,14 +144,14 @@ mod tests {
 
     #[test]
     fn test_rolling_hash_slide() {
-        let mut rh = RollingHash::default();
-
+        let mut rh = RollingHash::new(42, 10007);
+    
         for c in "ABC".as_bytes() {
             rh.append(*c);
         }
         rh.slide('A' as u8, 'D' as u8);
-
-        assert_eq!(921989349, rh.hash);
+    
+        assert_eq!(2819, rh.hash);
     }
 
     #[test]
