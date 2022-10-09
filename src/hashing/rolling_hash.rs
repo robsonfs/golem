@@ -26,7 +26,11 @@ impl RollingHash {
     /// update `self.ibase` with that value and return it to the caller.
     ///
     /// TODO: Take advantage of the extended Euclidean algorithm to improve
-    /// this implementation: (Maybe with [modinverse crate](https://crates.io/crates/modinverse) )
+    /// this implementation: (something like [modinverse crate](https://crates.io/crates/modinverse)).
+    /// 
+    /// # Panics
+    /// 
+    /// It will panic if `self.base` and `self.prime` are not relatively prime.
     pub fn base_inverse(&mut self) -> u64 {
         if let Some(i) = self.ibase {
             i
@@ -37,7 +41,7 @@ impl RollingHash {
                     return k;
                 }
             }
-            1 // As long as `base` and `prime` are coprime, this will never be returned.
+            panic!("Make sure that `base` and `prime` are relatively prime")
         }
     }
 
@@ -99,6 +103,13 @@ mod tests {
     fn test_rolling_hash_ibase() {
         let rh = RollingHash::default();
         assert!(rh.ibase.is_none(), "ibase should start as a None variant.")
+    }
+
+    #[test]
+    #[should_panic(expected = "Make sure that `base` and `prime` are relatively prime")]
+    fn test_rolling_hash_ibase_panics() {
+        let mut rh = RollingHash::new(12, 42);
+        let _ = rh.base_inverse();
     }
 
     #[test]
