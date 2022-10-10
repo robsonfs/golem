@@ -13,12 +13,13 @@ pub fn collect_stats<T: AsRef<str>>(
     let mut stats1 = HashStats::new(&content1, k_gram_value);
     let mut stats2 = HashStats::new(&content2, k_gram_value);
 
-    let _ = stats1.get_hashes();
-    let _ = stats2.get_hashes();
+    let _hashes = stats1.get_hashes();
+    let _hashes = stats2.get_hashes();
 
     (stats1, stats2)
 }
 
+#[allow(clippy::cast_precision_loss)]
 pub fn calculate_rate(stats1: HashStats, stats2: HashStats) -> f64 {
     let hset_1: HashSet<u64> = HashSet::from_iter(stats1.hashes);
     let hset_2: HashSet<u64> = HashSet::from_iter(stats2.hashes);
