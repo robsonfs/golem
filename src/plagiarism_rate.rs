@@ -19,6 +19,17 @@ pub fn collect_stats<T: AsRef<str>>(
     (stats1, stats2)
 }
 
+/// Calculates the plagiarism rate between two instances of `HashStats`
+/// The calculation follows the following formula:
+///
+/// P = ((2 * SH) / THA + THB) * 100
+/// Where:
+/// P = Plagiarism Rate
+/// SH = Identical Hash
+/// THA = Total Hash in Document A
+/// THB = Total Hash in Document B
+///
+/// For more information about the above method, [check this out](https://www.ijstr.org/final-print/july2017/K-gram-As-A-Determinant-Of-Plagiarism-Level-In-Rabin-karp-Algorithm.pdf).
 #[allow(clippy::cast_precision_loss)]
 pub fn calculate_rate(stats1: HashStats, stats2: HashStats) -> f64 {
     let hset_1: HashSet<u64> = HashSet::from_iter(stats1.hashes);
@@ -38,12 +49,10 @@ mod tests {
     const FLOAT_TOL: f64 = 0.000_366_210_94;
     const CONTENT_1: &str = r#"
     plagiarism is an act or instance of using or closely imitating the
-    language and thoughts of another author without authorization
-    "#;
+    language and thoughts of another author without authorization"#;
     const CONTENT_2: &str = r#"
     plagiarism is an act of copying the ideas or words of another person
-    without giving credit to that person
-    "#;
+    without giving credit to that person"#;
 
     #[test]
     fn test_calculate_rate_case_1() {
