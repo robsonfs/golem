@@ -4,7 +4,7 @@ pub struct HashStats {
     pub body: String,
     pub k_gram_value: usize,
     pub num_hashes: usize,
-    hashes: Vec<u64>,
+    pub hashes: Vec<u64>,
 }
 
 impl HashStats {
